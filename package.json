@@ -2,11 +2,21 @@
   "name": "koa_avito",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT"
-,
-  "nodemonConfig": { "delay": "1" },
-  "scripts": 
-  {
-        "dev": "nodemon --exec python3 main.py ./main.py" 
-  }, "dependencies": { "nodemon": "*" } 
+  "license": "MIT",
+  "nodemonConfig": {
+    "delay": "1"
+  },
+  "scripts": {
+    "dev2": "nodemon --exec python3 main.py ./main.py",
+    "dev": "backpack"
+  },
+  "dependencies": {
+    "backpack-core": "^0.8.4",
+    "koa": "^2.13.1",
+    "koa-body": "^4.2.0",
+    "koa-morgan": "^1.0.1",
+    "koa-router": "^10.0.0",
+    "nodemon": "*",
+    "pg": "^8.5.1"
+  }
 }
