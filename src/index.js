@@ -1,28 +1,52 @@
 const Koa = require("koa");
 const logger = require("koa-morgan");
 const Router = require("koa-router");
-const bodyParser = require("koa-body")();
+const koaBody = require("koa-body");
 
 const server = new Koa();
 const router = new Router();
 
-const db = require("./queries");
+const api = require("./queries");
 
 router.get("/", (ctx, next) => {
   ctx.body = "io ---";
 });
 
-router.get("/cards", async (ctx) => {
-  const data = await db.getCards(ctx);
+router.get("/card", async (ctx) => {
+  const data = await api.getAllCards(ctx);
 
   console.log("data ", data);
 
   ctx.body = {
     status: 200,
-    message: "get all cards",
+    message: "getAllCards",
     data: data,
   };
 });
+
+router.get("/card/:id", async (ctx) => {
+  const data = await api.getOneCards(ctx);
+
+  console.log("data ", data);
+
+  ctx.body = {
+    status: 200,
+    message: "getOneCard",
+    data: data,
+  };
+});
+
+router.post("/card", koaBody(), async (ctx) => {
+  const data = await api.addOneCards(ctx);
+
+  console.log('data', data);
+
+  ctx.body = {
+    status: 200,
+    message: "addOneCard",
+    data: data,
+  };
+})
 
 router.post("/data", (ctx) => {
   console.log(ctx.require.body);

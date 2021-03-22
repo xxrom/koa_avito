@@ -101,22 +101,40 @@ const logger = __webpack_require__(/*! koa-morgan */ "koa-morgan");
 
 const Router = __webpack_require__(/*! koa-router */ "koa-router");
 
-const bodyParser = __webpack_require__(/*! koa-body */ "koa-body")();
+const koaBody = __webpack_require__(/*! koa-body */ "koa-body");
 
 const server = new Koa();
 const router = new Router();
 
-const db = __webpack_require__(/*! ./queries */ "./src/queries.js");
+const api = __webpack_require__(/*! ./queries */ "./src/queries.js");
 
 router.get("/", (ctx, next) => {
   ctx.body = "io ---";
 });
-router.get("/cards", async ctx => {
-  const data = await db.getCards(ctx);
+router.get("/card", async ctx => {
+  const data = await api.getAllCards(ctx);
   console.log("data ", data);
   ctx.body = {
     status: 200,
-    message: "get all cards",
+    message: "getAllCards",
+    data: data
+  };
+});
+router.get("/card/:id", async ctx => {
+  const data = await api.getOneCards(ctx);
+  console.log("data ", data);
+  ctx.body = {
+    status: 200,
+    message: "getOneCard",
+    data: data
+  };
+});
+router.post("/card", koaBody(), async ctx => {
+  const data = await api.addOneCards(ctx);
+  console.log('data', data);
+  ctx.body = {
+    status: 200,
+    message: "addOneCard",
     data: data
   };
 });
@@ -139,12 +157,15 @@ server.use(logger("tiny")).use(router.routes()).use(router.allowedMethods()).use
 /*!************************!*\
   !*** ./src/queries.js ***!
   \************************/
-/*! exports provided: getCards */
+/*! exports provided: getAllCards, getOneCards, addOneCards */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getCards", function() { return getCards; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAllCards", function() { return getAllCards; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getOneCards", function() { return getOneCards; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addOneCards", function() { return addOneCards; });
+// https://blog.logrocket.com/nodejs-expressjs-postgresql-crud-rest-api-example/
 const {
   Pool,
   Client
@@ -165,10 +186,46 @@ const pool = new Pool({
   password: "123456",
   port: 5433
 });
-const getCards = async ctx => {
-  console.log("get cards");
-  const data = await pool.query("select * from videocards;");
-  return data.rows[0];
+const getAllCards = async ctx => {
+  try {
+    console.log("getAllCards");
+    const data = await pool.query("select * from videocards;");
+    return data.rows;
+  } catch (e) {
+    console.error("ERROR: getAllCards/", e);
+  }
+};
+const getOneCards = async ctx => {
+  try {
+    console.log('ctx', ctx.params);
+    const id = ctx.params.id;
+    console.log(`getOneCards ${id}`);
+    const data = await pool.query(`select * from videocards where card_id = ${id};`);
+    return data.rows[0];
+  } catch (e) {
+    console.error("ERROR: getOneCard/", e);
+  }
+};
+const addOneCards = async ctx => {
+  try {
+    console.log('ctx', ctx.params);
+    console.log('ctx', ctx.request.body);
+    const {
+      card_id,
+      link,
+      title,
+      price,
+      timeAgo,
+      geo
+    } = ctx.request.body;
+    const createdTime = Date.now();
+    console.log(`addOneCard ${card_id}`);
+    const data = await pool.query(`insert into videocards values (DEFAULT, ${card_id}, '${link}', '${title}', '${price}', '${timeAgo}', '${geo}', ${createdTime});`);
+    return data.rows;
+  } catch (e) {
+    console.error("ERROR: getOneCard/", e);
+    return e.message;
+  }
 };
 /*
 
@@ -182,6 +239,12 @@ create table videocards {
  geo text,
  createdTime int8
 }
+
++ /card       get     get get all cards
++ /card/:id   get     get one card
++ /card       post    add one card
+/card/:id   put     update card
+/card/:id   delete  * delete card
 
 */
 
