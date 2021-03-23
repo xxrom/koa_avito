@@ -25,7 +25,7 @@ router.get("/card", async (ctx) => {
 });
 
 router.get("/card/:id", async (ctx) => {
-  const data = await api.getOneCards(ctx);
+  const data = await api.getOneCard(ctx);
 
   console.log("data ", data);
 
@@ -37,7 +37,7 @@ router.get("/card/:id", async (ctx) => {
 });
 
 router.post("/card", koaBody(), async (ctx) => {
-  const data = await api.addOneCards(ctx);
+  const data = await api.addOneCard(ctx);
 
   console.log('data', data);
 
@@ -47,6 +47,19 @@ router.post("/card", koaBody(), async (ctx) => {
     data: data,
   };
 })
+
+router.delete("/card/:id", async (ctx) => {
+  const data = await api.removeOneCard(ctx);
+
+  console.log("data ", data);
+
+  ctx.body = {
+    status: 200,
+    message: "removeOneCard",
+    data: data,
+  };
+});
+
 
 router.post("/data", (ctx) => {
   console.log(ctx.require.body);

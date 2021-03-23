@@ -121,7 +121,7 @@ router.get("/card", async ctx => {
   };
 });
 router.get("/card/:id", async ctx => {
-  const data = await api.getOneCards(ctx);
+  const data = await api.getOneCard(ctx);
   console.log("data ", data);
   ctx.body = {
     status: 200,
@@ -130,11 +130,20 @@ router.get("/card/:id", async ctx => {
   };
 });
 router.post("/card", koaBody(), async ctx => {
-  const data = await api.addOneCards(ctx);
+  const data = await api.addOneCard(ctx);
   console.log('data', data);
   ctx.body = {
     status: 200,
     message: "addOneCard",
+    data: data
+  };
+});
+router.delete("/card/:id", async ctx => {
+  const data = await api.removeOneCard(ctx);
+  console.log("data ", data);
+  ctx.body = {
+    status: 200,
+    message: "removeOneCard",
     data: data
   };
 });
@@ -157,14 +166,15 @@ server.use(logger("tiny")).use(router.routes()).use(router.allowedMethods()).use
 /*!************************!*\
   !*** ./src/queries.js ***!
   \************************/
-/*! exports provided: getAllCards, getOneCards, addOneCards */
+/*! exports provided: getAllCards, getOneCard, addOneCard, removeOneCard */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAllCards", function() { return getAllCards; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getOneCards", function() { return getOneCards; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addOneCards", function() { return addOneCards; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getOneCard", function() { return getOneCard; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addOneCard", function() { return addOneCard; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeOneCard", function() { return removeOneCard; });
 // https://blog.logrocket.com/nodejs-expressjs-postgresql-crud-rest-api-example/
 const {
   Pool,
@@ -195,18 +205,18 @@ const getAllCards = async ctx => {
     console.error("ERROR: getAllCards/", e);
   }
 };
-const getOneCards = async ctx => {
+const getOneCard = async ctx => {
   try {
     console.log('ctx', ctx.params);
     const id = ctx.params.id;
-    console.log(`getOneCards ${id}`);
+    console.log(`getOneCard ${id}`);
     const data = await pool.query(`select * from videocards where card_id = ${id};`);
     return data.rows[0];
   } catch (e) {
     console.error("ERROR: getOneCard/", e);
   }
 };
-const addOneCards = async ctx => {
+const addOneCard = async ctx => {
   try {
     console.log('ctx', ctx.params);
     console.log('ctx', ctx.request.body);
@@ -223,7 +233,19 @@ const addOneCards = async ctx => {
     const data = await pool.query(`insert into videocards values (DEFAULT, ${card_id}, '${link}', '${title}', '${price}', '${timeAgo}', '${geo}', ${createdTime});`);
     return data.rows;
   } catch (e) {
-    console.error("ERROR: getOneCard/", e);
+    console.error("ERROR: addOneCard/", e);
+    return e.message;
+  }
+};
+const removeOneCard = async ctx => {
+  try {
+    console.log('ctx', ctx.params);
+    const id = ctx.params.id;
+    console.log(`removeOneCard ${id}`);
+    const data = await pool.query(`DELETE FROM videocards WHERE card_id = ${id}`);
+    return data.rows;
+  } catch (e) {
+    console.error("ERROR: removeOneCard/", e);
     return e.message;
   }
 };

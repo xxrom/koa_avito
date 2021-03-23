@@ -29,12 +29,12 @@ export const getAllCards = async (ctx) => {
     console.error("ERROR: getAllCards/", e);
   }
 };
-export const getOneCards = async (ctx) => {
+export const getOneCard = async (ctx) => {
   try {
     console.log('ctx', ctx.params)
     const id = ctx.params.id;
 
-    console.log(`getOneCards ${id}`);
+    console.log(`getOneCard ${id}`);
 
     const data = await pool.query(
       `select * from videocards where card_id = ${id};`
@@ -46,7 +46,7 @@ export const getOneCards = async (ctx) => {
   }
 };
 
-export const addOneCards = async (ctx) => {
+export const addOneCard = async (ctx) => {
   try {
     console.log('ctx', ctx.params)
     console.log('ctx', ctx.request.body)
@@ -61,11 +61,29 @@ export const addOneCards = async (ctx) => {
 
     return data.rows;
   } catch (e) {
-    console.error("ERROR: getOneCard/", e);
+    console.error("ERROR: addOneCard/", e);
 
     return e.message;
   }
 };
+
+export const removeOneCard = async (ctx) => {
+  try {
+    console.log('ctx', ctx.params)
+    const id = ctx.params.id;
+
+    console.log(`removeOneCard ${id}`);
+
+    const data = await pool.query(`DELETE FROM videocards WHERE card_id = ${id}`);
+
+    return data.rows;
+  } catch (e) {
+    console.error("ERROR: removeOneCard/", e);
+
+    return e.message;
+  }
+};
+
 /*
 
 create table videocards {
