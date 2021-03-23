@@ -20,7 +20,7 @@ router.get("/card", async (ctx) => {
   ctx.body = {
     status: 200,
     message: "getAllCards",
-    data: data,
+    data,
   };
 });
 
@@ -32,21 +32,33 @@ router.get("/card/:id", async (ctx) => {
   ctx.body = {
     status: 200,
     message: "getOneCard",
-    data: data,
+    data,
   };
 });
 
 router.post("/card", koaBody(), async (ctx) => {
   const data = await api.addOneCard(ctx);
 
-  console.log('data', data);
+  console.log("data", data);
 
   ctx.body = {
     status: 200,
     message: "addOneCard",
-    data: data,
+    data,
   };
-})
+});
+
+router.put("/card/:id", koaBody(), async (ctx) => {
+  const data = await api.updateOneCard(ctx);
+
+  console.log("data", data);
+
+  ctx.body = {
+    status: 200,
+    message: "updateOneCard",
+    data,
+  };
+});
 
 router.delete("/card/:id", async (ctx) => {
   const data = await api.removeOneCard(ctx);
@@ -56,10 +68,9 @@ router.delete("/card/:id", async (ctx) => {
   ctx.body = {
     status: 200,
     message: "removeOneCard",
-    data: data,
+    data,
   };
 });
-
 
 router.post("/data", (ctx) => {
   console.log(ctx.require.body);

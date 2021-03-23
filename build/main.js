@@ -117,7 +117,7 @@ router.get("/card", async ctx => {
   ctx.body = {
     status: 200,
     message: "getAllCards",
-    data: data
+    data
   };
 });
 router.get("/card/:id", async ctx => {
@@ -126,16 +126,25 @@ router.get("/card/:id", async ctx => {
   ctx.body = {
     status: 200,
     message: "getOneCard",
-    data: data
+    data
   };
 });
 router.post("/card", koaBody(), async ctx => {
   const data = await api.addOneCard(ctx);
-  console.log('data', data);
+  console.log("data", data);
   ctx.body = {
     status: 200,
     message: "addOneCard",
-    data: data
+    data
+  };
+});
+router.put("/card/:id", koaBody(), async ctx => {
+  const data = await api.updateOneCard(ctx);
+  console.log("data", data);
+  ctx.body = {
+    status: 200,
+    message: "updateOneCard",
+    data
   };
 });
 router.delete("/card/:id", async ctx => {
@@ -144,7 +153,7 @@ router.delete("/card/:id", async ctx => {
   ctx.body = {
     status: 200,
     message: "removeOneCard",
-    data: data
+    data
   };
 });
 router.post("/data", ctx => {
@@ -166,7 +175,7 @@ server.use(logger("tiny")).use(router.routes()).use(router.allowedMethods()).use
 /*!************************!*\
   !*** ./src/queries.js ***!
   \************************/
-/*! exports provided: getAllCards, getOneCard, addOneCard, removeOneCard */
+/*! exports provided: getAllCards, getOneCard, addOneCard, updateOneCard, removeOneCard */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -174,6 +183,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getAllCards", function() { return getAllCards; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getOneCard", function() { return getOneCard; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addOneCard", function() { return addOneCard; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "updateOneCard", function() { return updateOneCard; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeOneCard", function() { return removeOneCard; });
 // https://blog.logrocket.com/nodejs-expressjs-postgresql-crud-rest-api-example/
 const {
@@ -237,6 +247,27 @@ const addOneCard = async ctx => {
     return e.message;
   }
 };
+const updateOneCard = async ctx => {
+  try {
+    console.log('ctx', ctx.params);
+    const id = ctx.params.id;
+    console.log('ctx', ctx.request.body);
+    const {
+      link,
+      title,
+      price,
+      timeAgo,
+      geo
+    } = ctx.request.body;
+    const createdTime = Date.now();
+    console.log(`updateOneCard ${id}`);
+    const data = await pool.query(`UPDATE videocards SET link = '${link}', title = '${title}', price = '${price}', timeAgo = '${timeAgo}', geo = '${geo}', createdTime = ${createdTime} WHERE card_id = ${id};`);
+    return data.rows;
+  } catch (e) {
+    console.error("ERROR: updateOneCard/", e);
+    return e.message;
+  }
+};
 const removeOneCard = async ctx => {
   try {
     console.log('ctx', ctx.params);
@@ -266,7 +297,17 @@ create table videocards {
 + /card/:id   get     get one card
 + /card       post    add one card
 /card/:id   put     update card
-/card/:id   delete  * delete card
++ /card/:id   delete  * delete card
+
+ADD 
+curl -d '{"card_id": "2131858292", "link": "/moskovskaya_oblast_ivanteevka/tovary_dlya_kompyutera/videokarta_4_gb_geforce_gtx_980_asus_strix_oc_2131858292?slocation=107620", "title": "Видеокарта 4 gb geforce gtx 980 asus strix OC", "price": "20000", "timeAgo": "20 hours ago", "geo": "ivanteevka" }' -H "Content-Type: application/json" -X POST http://localhost:3010/card
+
+UPDATE
+curl -d '{"link": "/moskovskaya_oblast_ivanteevka/tovary_dlya_kompyutera/videokarta_4_gb_geforce_gtx_980_asus_strix_oc_2131858292?slocation=107620", "title": "Видеокарта 4 gb geforce gtx 980 asus strix OC", "price": "20000", "timeAgo": "20 hours ago", "geo": "ivanteevka222" }' -H "Content-Type: application/json" -X PUT http://localhost:3010/card/2108953106
+
+REMOVE
+curl -X DELETE http://localhost:3010/card/2131858292
+{"status":200,"message":"removeOneCard","data":[]}
 
 */
 
