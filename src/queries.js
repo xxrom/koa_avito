@@ -1,5 +1,5 @@
 // https://blog.logrocket.com/nodejs-expressjs-postgresql-crud-rest-api-example/
-const { Pool, Client } = require("pg");
+const {Pool, Client} = require("pg");
 
 const client = new Client({
   user: "postgres",
@@ -18,7 +18,7 @@ const pool = new Pool({
   port: 5433,
 });
 
-export const getAllCards = async (ctx) => {
+export const getAllCards = async () => {
   try {
     console.log("getAllCards");
 
@@ -29,6 +29,7 @@ export const getAllCards = async (ctx) => {
     console.error("ERROR: getAllCards/", e);
   }
 };
+
 export const getOneCard = async (ctx) => {
   try {
     console.log('ctx', ctx.params)
@@ -50,7 +51,7 @@ export const addOneCard = async (ctx) => {
   try {
     console.log('ctx', ctx.params)
     console.log('ctx', ctx.request.body)
-    const { card_id, link, title, price, timeAgo, geo } = ctx.request.body;
+    const {card_id, link, title, price, timeAgo, geo} = ctx.request.body;
 
     const createdTime = Date.now();
 
@@ -72,7 +73,7 @@ export const updateOneCard = async (ctx) => {
     const id = ctx.params.id;
 
     console.log('ctx', ctx.request.body)
-    const { link, title, price, timeAgo, geo } = ctx.request.body;
+    const {link, title, price, timeAgo, geo} = ctx.request.body;
 
     const createdTime = Date.now();
 
@@ -125,7 +126,7 @@ create table videocards {
 /card/:id   put     update card
 + /card/:id   delete  * delete card
 
-ADD 
+ADD
 curl -d '{"card_id": "2131858292", "link": "/moskovskaya_oblast_ivanteevka/tovary_dlya_kompyutera/videokarta_4_gb_geforce_gtx_980_asus_strix_oc_2131858292?slocation=107620", "title": "Видеокарта 4 gb geforce gtx 980 asus strix OC", "price": "20000", "timeAgo": "20 hours ago", "geo": "ivanteevka" }' -H "Content-Type: application/json" -X POST http://localhost:3010/card
 
 UPDATE

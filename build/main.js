@@ -206,7 +206,7 @@ const pool = new Pool({
   password: "123456",
   port: 5433
 });
-const getAllCards = async ctx => {
+const getAllCards = async () => {
   try {
     console.log("getAllCards");
     const data = await pool.query("select * from videocards;");
@@ -299,7 +299,7 @@ create table videocards {
 /card/:id   put     update card
 + /card/:id   delete  * delete card
 
-ADD 
+ADD
 curl -d '{"card_id": "2131858292", "link": "/moskovskaya_oblast_ivanteevka/tovary_dlya_kompyutera/videokarta_4_gb_geforce_gtx_980_asus_strix_oc_2131858292?slocation=107620", "title": "Видеокарта 4 gb geforce gtx 980 asus strix OC", "price": "20000", "timeAgo": "20 hours ago", "geo": "ivanteevka" }' -H "Content-Type: application/json" -X POST http://localhost:3010/card
 
 UPDATE
