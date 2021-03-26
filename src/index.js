@@ -2,6 +2,7 @@ const Koa = require("koa");
 const logger = require("koa-morgan");
 const Router = require("koa-router");
 const koaBody = require("koa-body");
+const cors = require('@koa/cors');
 
 const server = new Koa();
 const router = new Router();
@@ -74,11 +75,12 @@ router.delete("/card/:id", async (ctx) => {
 
 router.post("/data", (ctx) => {
   console.log(ctx.require.body);
-  ctx.body = { data: ctx.request.body };
+  ctx.body = {data: ctx.request.body};
 });
 
 server
   .use(logger("tiny"))
+  .use(cors())
   .use(router.routes())
   .use(router.allowedMethods())
   .use(async (ctx, next) => {
