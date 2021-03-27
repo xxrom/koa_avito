@@ -9,7 +9,7 @@ const router = new Router();
 
 const api = require("./queries");
 
-router.get("/", (ctx, next) => {
+router.get("/", (ctx) => {
   ctx.body = "io ---";
 });
 

@@ -11,10 +11,10 @@
     "dev": "backpack"
   },
   "dependencies": {
+    "@koa/cors": "^3.1.0",
     "backpack-core": "^0.8.4",
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",
-    "koa-cors": "^0.0.16",
     "koa-morgan": "^1.0.1",
     "koa-router": "^10.0.0",
     "nodemon": "*",
