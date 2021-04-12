@@ -1,3 +1,5 @@
+# nich/kod_avito:0.1.0
+
 FROM node:15.12.0-alpine3.10
 
 RUN npm i -g npm
